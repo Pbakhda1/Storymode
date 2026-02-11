@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Storymode — Book to Video</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <div class="brand">
+        <div class="logo">SM</div>
+        <div class="brand-text">
+          <div class="brand-name">Storymode</div>
+          <div class="brand-tag">Turn stories into a watchable storyboard</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#create">Create</a>
+        <a href="#preview">Preview</a>
+        <a href="#export">Export</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <h1>Upload a story. Watch it like a movie.</h1>
+          <p class="subhead">
+            Storymode converts your story into scenes, captions, and a video-style storyboard preview.
+            (This demo simulates the video. Real AI video generation needs external AI services.)
+          </p>
+
+          <div class="cta-row">
+            <a class="btn primary" href="#create">Start a storyboard</a>
+            <a class="btn ghost" href="#preview">Preview</a>
+          </div>
+
+          <div class="creator">Created by <strong>Parth Pankaj Bakhda</strong></div>
+
+          <div class="trust">
+            <div class="pill">✅ Upload .txt</div>
+            <div class="pill">✅ Auto scene split</div>
+            <div class="pill">✅ Voice narration (TTS)</div>
+            <div class="pill">✅ Export shot list</div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <div class="card-title">How it works</div>
+          <ul class="checklist">
+            <li>Upload or paste a story</li>
+            <li>Pick style + pacing</li>
+            <li>Generate scenes</li>
+            <li>Preview like a video storyboard</li>
+          </ul>
+          <div class="note">
+            Tip: Use short chapters/sections for the best preview.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="create" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>Create storyboard</h2>
+          <p>Upload a .txt file or paste your story. Then generate scenes.</p>
+        </div>
+
+        <div class="workspace">
+          <div class="panel">
+            <div class="panel-title">Story input</div>
+
+            <label class="label">Upload .txt (optional)</label>
+            <input id="fileInput" type="file" accept=".txt,text/plain" />
+
+            <label class="label">Or paste story text</label>
+            <textarea id="storyText" rows="10" placeholder="Paste your story here..."></textarea>
+
+            <div class="control-row">
+              <button class="btn primary" id="loadDemoBtn">Load demo story</button>
+              <button class="btn" id="clearBtn">Clear</button>
+            </div>
+
+            <div class="callout" id="inputStatus">
+              <strong>Status:</strong> Add a story to begin.
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">Storyboard settings</div>
+
+            <label class="label">Video style</label>
+            <select id="styleSelect">
+              <option value="cinematic">Cinematic</option>
+              <option value="anime">Anime</option>
+              <option value="noir">Noir</option>
+              <option value="kids">Kids / Cartoon</option>
+              <option value="documentary">Documentary</option>
+            </select>
+
+            <label class="label">Pacing (seconds per scene)</label>
+            <input id="pacing" type="range" min="2" max="10" value="5" />
+            <div class="tiny muted">Current: <span id="pacingVal">5</span>s</div>
+
+            <label class="label">Scene length</label>
+            <select id="sceneLen">
+              <option value="short">Short (more scenes)</option>
+              <option value="medium" selected>Medium</option>
+              <option value="long">Long (fewer scenes)</option>
+            </select>
+
+            <label class="label">Narration voice</label>
+            <select id="voiceSelect"></select>
+            <div class="tiny muted">Uses your device’s built-in voices.</div>
+
+            <div class="control-row">
+              <button class="btn primary" id="generateBtn">Generate storyboard</button>
+              <button class="btn" id="resetScenesBtn" disabled>Reset</button>
+            </div>
+
+            <div class="callout" id="genStatus">
+              <strong>Status:</strong> Choose settings, then generate.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="preview" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>Preview</h2>
+          <p>Play the storyboard like a video slideshow with captions and narration.</p>
+        </div>
+
+        <div class="workspace">
+          <div class="panel">
+            <div class="panel-title">Player</div>
+
+            <div class="player">
+              <div class="frame" id="frame">
+                <div class="frame-style" id="frameStyleTag">CINEMATIC</div>
+                <div class="frame-title" id="frameTitle">No storyboard yet</div>
+                <div class="frame-desc" id="frameDesc">Generate scenes to preview your story.</div>
+              </div>
+
+              <div class="caption">
+                <div class="caption-label">Caption</div>
+                <div class="caption-text" id="captionText">—</div>
+              </div>
+
+              <div class="control-row">
+                <button class="btn primary" id="playBtn" disabled>Play</button>
+                <button class="btn" id="pauseBtn" disabled>Pause</button>
+                <button class="btn" id="stopBtn" disabled>Stop</button>
+                <button class="btn" id="speakBtn" disabled>Narrate scene</button>
+              </div>
+
+              <div class="tiny muted" id="playerMeta">Scene 0 / 0</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">Scenes</div>
+            <div class="tiny muted">Click a scene to jump.</div>
+            <div id="scenesList" class="scenes"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="export" class="section section-alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>Export</h2>
+          <p>Download your storyboard as a JSON file or a readable shot list.</p>
+        </div>
+
+        <div class="workspace">
+          <div class="panel">
+            <div class="panel-title">Shot list</div>
+            <textarea id="shotList" rows="14" readonly placeholder="Generate storyboard to see shot list..."></textarea>
+            <div class="control-row">
+              <button class="btn primary" id="downloadShotListBtn" disabled>Download shot list (.txt)</button>
+              <button class="btn" id="downloadJsonBtn" disabled>Download scenes (.json)</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-title">Notes</div>
+            <div class="callout">
+              <strong>Real AI video:</strong> To turn these scenes into actual AI video, you’d connect Storymode to a video model/service.
+              This website is the “front-end product demo” plus storyboard generator.
+            </div>
+            <div class="callout">
+              <strong>Copyright reminder:</strong> Only upload text you own or have permission to use.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div>
+          <div class="footer-brand">Storymode</div>
+          <div class="footer-sub">Created by Parth Pankaj Bakhda</div>
+        </div>
+        <div class="footer-links">
+          <a href="#create">Create</a>
+          <a href="#preview">Preview</a>
+          <a href="#export">Export</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
